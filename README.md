@@ -1,1 +1,1 @@
-"# vk-news" 
+# VK News 
