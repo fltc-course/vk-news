@@ -1,17 +1,18 @@
-from aiogram import Bot, types
+from aiogram import Bot
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
 from aiogram.utils.markdown import text
 
-from config import *
+import config
 from bot_func.posts import *
 
-bot = Bot(token=TG_TOKEN)
+bot = Bot(token=config.TG_TOKEN)
 dp = Dispatcher(bot)
 
 
 @dp.message_handler(commands=['start'])
 async def process_start_command(message: types.Message):
+    config.reset_start_time()
     await message.reply("Hi!\nCheck /help command!")
 
 
@@ -35,19 +36,21 @@ async def process_help_command(message: types.Message):
 
 @dp.message_handler(commands=['get_posts'])
 async def get_posts_handler(message: types.Message):
-    posts = get_posts(VK_TOKEN, START_TIME)
+    posts = get_posts(config.VK_TOKEN, config.START_TIME)
+    config.reset_start_time()
+
     for post in posts:
         try:
-            if "attachments" not in post or len(post["attachments"]) == 0:
-                await message.answer(text=post["text"])
+            caption = post["text"]
+            if "attachments" not in post:
+                await message.answer(caption)
             else:
                 media = types.MediaGroup()
                 for attachment in post["attachments"]:
-                    caption = None
-                    if len(media.to_python()) == 0:
-                        caption = post["text"]
+                    if len(media.to_python()) != 0:
+                        caption = None
                     try:
-                        media_attach_file(media, attachment, VK_TOKEN, caption)
+                        media_attach_file(media, attachment, config.VK_TOKEN, caption)
                     except:
                         print("error")
                         continue
@@ -58,5 +61,4 @@ async def get_posts_handler(message: types.Message):
 
 
 if __name__ == '__main__':
-
     executor.start_polling(dp)
