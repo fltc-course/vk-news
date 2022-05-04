@@ -1,0 +1,14 @@
+# this is the sample of .env file
+# before bot start add .env file to the root directory of this bot
+# and add these variables to it
+
+# token of your telegram bot
+TG_TOKEN = BOT_TOKEN
+
+# your vk access token
+# you can get it on https://vkhost.github.io/
+VK_TOKEN = YOUR_VK_TOKEN
+
+# the time, from what you want to load posts
+# resets on each /start or /get_posts command
+START_TIME = TIME
